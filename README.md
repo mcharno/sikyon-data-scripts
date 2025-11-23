@@ -1,11 +1,50 @@
 Sikyon Data Processing Scripts
 ==============================
 
-This project was created to automate the cleaning and integration of the Sikyon data into a usable format for the purpose of publication and interpretation. It was primarily written in 2008 and with the benefit of hindsight, in a rather sloppy and unfortunate way. The point of this code being "published" on GitHub is not for ridicule or self-deprecation, but rather to provide the original code to anyone wishing to challenge or reinterpret the conclusions from the Sikyon Survey monograph.
+This project was created to automate the cleaning and integration of the Sikyon data into a usable format for the purpose of publication and interpretation.
 
-Revisiting this code in preparation for "publication" has brought on feelings of bemusement and minor revulsion. And while it would be very easy to refactor the majority of the bad practice, antipatterns, and general ugliness out of the code, I felt it was important to leave the code as it was when it originally processed the data used in the analysis and interpretation for the publication. In this way, there is no chance of an inadvertent modification to the logic which would in turn alter the processing of the data.
+## Repository Structure
 
-Lots of stuff was just hardcoded, such as paths and configuration details. The database paths which referenced the original locations on my old Linux workstation have been left in for reference, although they are obviously totally irrelevant. The original project was created in Netbeans, but all traces of Netbeans specific stuff has been removed. There is also not a single test that graces this project, it was tested and validated cowboy style on copies of the database.
+This repository now contains **two versions** of the Sikyon data processing scripts:
+
+### 📁 `original/` - Original Publication Code (2008)
+The original code written in 2008, preserved exactly as it was when it processed the data used in the publication. This code is referenced in the Sikyon Survey monograph and is maintained without modification to ensure reproducibility of the published results.
+
+The original code was written with the benefit of hindsight in a rather sloppy way, with hardcoded paths, no tests, and various antipatterns. However, it has been left untouched to ensure there is no chance of inadvertent modification to the logic which would alter the processing of the published data.
+
+**Documentation:** See [original/README.md](original/README.md) for details on running the original code.
+
+### 📁 `modernized/` - Modernized Version (2025)
+A complete modernization of the data processing scripts using current best practices and patterns:
+
+- ✅ **Modern Java 17+** with Records, Stream API, and modern language features
+- ✅ **Spring Boot** for dependency injection and configuration management
+- ✅ **Cross-platform compatibility** (Windows, macOS, Linux)
+- ✅ **Externalized configuration** via YAML files
+- ✅ **Proper logging** with SLF4J and Logback
+- ✅ **Repository pattern** for data access
+- ✅ **Open-source dependencies** (no commercial JDBC drivers required)
+- ✅ **Docker support** for consistent execution environments
+- ✅ **Type safety** and immutability with Records
+- ✅ **Modern error handling** and validation
+
+**Documentation:** See [modernized/README.md](modernized/README.md) for details on running the modernized version.
+
+## Quick Start
+
+### Running the Original Version
+```bash
+cd original
+mvn clean compile
+# See original/README.md for detailed instructions
+```
+
+### Running the Modernized Version
+```bash
+cd modernized
+mvn spring-boot:run
+# See modernized/README.md for detailed instructions
+```
 
 Publication
 -----------
