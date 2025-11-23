@@ -1,106 +1,259 @@
-Sikyon Data Processing Scripts
-==============================
+# Sikyon Data Processing Scripts
 
-This project was created to automate the cleaning and integration of the Sikyon data into a usable format for the purpose of publication and interpretation.
+A modern, cross-platform system for processing archaeological pottery data from the Sikyon Survey Project.
 
-## Repository Structure
+## Overview
 
-This repository now contains **two versions** of the Sikyon data processing scripts:
+This repository contains data processing scripts for the Sikyon Survey Project, an archaeological survey of ancient Sikyon (northeastern Peloponnese, Greece) conducted between 2004-2009. The scripts automate the cleaning, integration, and analysis of pottery survey data from excavation databases.
 
-### 📁 `original/` - Original Publication Code (2008)
-The original code written in 2008, preserved exactly as it was when it processed the data used in the publication. This code is referenced in the Sikyon Survey monograph and is maintained without modification to ensure reproducibility of the published results.
+**Current Version:** 2.0 (Modernized 2025)
 
-The original code was written with the benefit of hindsight in a rather sloppy way, with hardcoded paths, no tests, and various antipatterns. However, it has been left untouched to ensure there is no chance of inadvertent modification to the logic which would alter the processing of the published data.
+### Technology Stack
 
-**Documentation:** See [original/README.md](original/README.md) for details on running the original code.
-
-### 📁 `modernized/` - Modernized Version (2025)
-A complete modernization of the data processing scripts using current best practices and patterns:
-
-- ✅ **Modern Java 17+** with Records, Stream API, and modern language features
-- ✅ **Spring Boot** for dependency injection and configuration management
-- ✅ **Cross-platform compatibility** (Windows, macOS, Linux)
-- ✅ **Externalized configuration** via YAML files
-- ✅ **Proper logging** with SLF4J and Logback
-- ✅ **Repository pattern** for data access
-- ✅ **Open-source dependencies** (no commercial JDBC drivers required)
-- ✅ **Docker support** for consistent execution environments
-- ✅ **Type safety** and immutability with Records
-- ✅ **Modern error handling** and validation
-
-**Documentation:** See [modernized/README.md](modernized/README.md) for details on running the modernized version.
+- **Java 17+** with Records and modern language features
+- **Spring Boot 3.2** for dependency injection and configuration
+- **Cross-platform compatible** - Windows, macOS, and Linux
+- **UCanAccess 5.0.1** for MS Access databases (no MS Access installation required)
+- **Docker support** for consistent execution environments
 
 ## Quick Start
 
-### Running the Original Version
+### Prerequisites
+
+**Option 1: Local Development**
+- Java 17 or higher ([Download](https://adoptium.net/))
+- Maven 3.9+ ([Download](https://maven.apache.org/download.cgi))
+
+**Option 2: Docker**
+- Docker and Docker Compose ([Download](https://www.docker.com/products/docker-desktop))
+
+### Installation
+
 ```bash
-cd original
-mvn clean compile
-# See original/README.md for detailed instructions
+git clone <repository-url>
+cd sikyon-data-scripts
 ```
 
-### Running the Modernized Version
+Verify Java installation:
 ```bash
-cd modernized
+java -version   # Should show Java 17+
+mvn -version    # Should show Maven 3.9+
+```
+
+### Running Scripts
+
+**List available scripts:**
+```bash
 mvn spring-boot:run
-# See modernized/README.md for detailed instructions
 ```
 
-Publication
------------
-Having said all of that, the code enabled an efficient and repeatable way to process the original survey data in a way that benefited the archaeologists trying to understand the site. The monograph this code and data helped shape will be published in Meletemata in 2018 by the [Greek National Research Foundation](https://history-bookstore.eie.gr/en/section/greek-roman-antiquity/meletemata/). The updated bibliographic reference will be published here when it is available.
+**Run a specific script:**
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments=--script=db-cleaner
+```
 
-The Sikyon Survey Project
--------------------------
-The project was a multidisciplinary research program to study the human presence and activity on the plateau of ancient Sikyon, a city in northeastern Peloponnese between Corinth and Achaia. The project ran between the summers of 2004 and 2009 and was undertaken by the University of Thessaly in collaboration with  the University of York (UK), the Institute of Mediterranean Studies at FORTH and the 37th Ephoreia of Prehistoric and Classical Antiquities.
+**Using Docker:**
+```bash
+docker-compose run --rm sikyon-scripts --script=density-builder
+```
 
-The primary activity of the project was an urban survey of the ancient city, which quantified and qualified both pottery and architectural observations from the field over the 5 seasons. That data was captured in a database and GIS, which aided the archaeologists in making their interpretation of the ancient city and its use.
+## Available Scripts
 
-Further interpretations and discussions about the Sikyon Survey Project can be found in the [project website](http://extras.ha.uth.gr/sikyon/en/), or from the following publications:
+| Script | Description | Command |
+|--------|-------------|---------|
+| **db-cleaner** | Normalize Square and Tract IDs | `--script=db-cleaner` |
+| **density-builder** | Calculate pottery/tile densities | `--script=density-builder` |
+| **pottery-hellenistic** | Export Hellenistic pottery to CSV | `--script=pottery-hellenistic` |
+| **pottery-roman** | Export Roman pottery to CSV | `--script=pottery-roman` |
+| **pottery-builder** | Build GIS pottery tables | `--script=pottery-builder` |
+| **main-database** | Generate analysis database | `--script=main-database` |
 
-* Lolos, Y. 2011 'Land of Sikyon: archaeology and history of a Greek city-state', Hesperia suppl. 39.
-* Lolos, Y., Gourley, B. and Stewart, D. 2008 'The Sikyon Survey Project: a blueprint for urban survey?', Journal of Mediterranean Archaeology **20** (2), 267-96.
-* Charno, M. 2007 'An Interactive Image Using SVG and Ajax in Archaeology', [Internet Archaeology](http://intarch.ac.uk/) **23**. https://doi.org/10.11141/ia.23.5
+## Configuration
 
-Building the Project
---------------------
-This project was originally built using Netbeans and Ant, but i've added Maven to the project to make this process (and the overall project structure) more generic.
+Configure database paths in `src/main/resources/application.yml`:
 
-Dependencies
-------------
-### OpenCSV ###
-This library was used to write CSV after parsing and processing data from the database. This can be pulled in from Maven Central.
+```yaml
+database:
+  access:
+    main: "./data/ssp_main.mdb"
+    working: "./data/ssp_working.mdb"
+    reference: "./data/sik_db-working.mdb"
+  oracle:
+    primary:
+      url: "jdbc:oracle:thin:@localhost:1521:xe"
+      username: ""
+      password: ""
+```
 
-### OJDBC6 ###
-This library was used to drive JDBC connections to Oracle databases, which was utilised to insert processed data into an Oracle ArcSDE database hosted by the Archaeology Data Service. The loader that does that was used to process the data, associate it with its relative spatial entity, then export the combined data as an ESRI Shapefile for use in desktop GIS.
+### Environment Variables
 
-### Access JDBC ###
-A library is necessary to create a JDBC connection to an MS Access database. A example product that is available commercially is the [HXTT JDBC Driver for Access](http://www.hxtt.com/access.html). To add this to your project to re-run the scripts, purchase a license from HXTT and download the JAR. Once downloaded add it to your local maven repository with:
+Override configuration using environment variables:
 
-    mvn install:install-file -DgroupId=com.hxtt.sql.access -DartifactId=accessjdbc4 \
-     -Dversion=v5.1 -Dpackaging=jar -Dfile=Access_JDBC40.jar -DgeneratePom=true
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DB_ACCESS_MAIN` | Main Access database path | `./data/ssp_main.mdb` |
+| `DB_ACCESS_WORKING` | Working Access database path | `./data/ssp_working.mdb` |
+| `DB_ACCESS_REF` | Reference Access database path | `./data/sik_db-working.mdb` |
+| `DB_ORACLE_URL` | Oracle database URL | `jdbc:oracle:thin:@host:1521:xe` |
+| `DB_ORACLE_USER` | Oracle username | `username` |
+| `DB_ORACLE_PASS` | Oracle password | `password` |
+| `EXPORT_CSV_DIR` | CSV output directory | `./output/csv` |
 
- Then add the following to your `pom.xml` dependencies entry:
+See `.env.example` for a complete list of configuration options.
 
-    <dependency>
-         <groupId>com.hxtt.sql.access</groupId>
-         <artifactId>accessjdbc4</artifactId>
-         <version>v5.1</version>
-     </dependency>
+## Architecture
 
-There are also other libraries available, such as [UCanAccess](http://ucanaccess.sourceforge.net/site.html).
+### Project Structure
 
-Running the Scripts
--------------------
-To run the scripts, you can simply run the main method in any of the classes in the `scripts` package. These scripts were used to get some data out of a database, process/clean it, then reinsert the data back in the database or create an export. The available scripts are:
+```
+sikyon-data-scripts/
+├── src/
+│   ├── main/
+│   │   ├── java/net/charno/sikyon/
+│   │   │   ├── config/              # Configuration classes
+│   │   │   ├── model/               # Data models (Records)
+│   │   │   ├── repository/          # Data access layer
+│   │   │   ├── service/             # Business logic
+│   │   │   └── script/              # Script implementations
+│   │   └── resources/
+│   │       ├── application.yml      # Configuration
+│   │       └── logback-spring.xml   # Logging config
+│   └── test/                        # Unit tests
+├── original/                        # Historical code (2008)
+├── Dockerfile                       # Docker build
+├── docker-compose.yml               # Docker Compose
+└── pom.xml                          # Maven dependencies
+```
 
-* `DBCLeaner`: A utility script to correct or update Tract & Square IDs
-* `DensityBuilder`: A script to build raw and visibility corrected densities values for each Square
-* `MainDatabase`: A script to create percentages for pottery types, shapes and periods based on square counts, taking into account the idiosyncrasies of each pottery specialists recording technique
-* `PotteryTableBuilder`: A script to take pottery data and import it into a geospatial database for rendering in a GIS
-* `PotteryTableHellenistic`: A script to export the specialist Hellenistic pottery data in the pipe delimited format
-* `PotteryTableRoman`: A script to clean the Roman pottery data
+### Key Features
 
-Conclusion
-----------
-This code ain't pretty, but it did its job and is now available for others to investigate and re-process as required. It was also written before I discovered Spring and JPA, so be nice...
+✅ **Modern Java 17+** - Records, Stream API, modern patterns
+✅ **Spring Boot 3.2** - Dependency injection, auto-configuration
+✅ **Cross-platform** - Runs on Windows, macOS, Linux
+✅ **Externalized Config** - YAML files and environment variables
+✅ **Professional Logging** - SLF4J/Logback with file rotation
+✅ **Repository Pattern** - Clean separation of concerns
+✅ **Open-Source Stack** - No commercial licenses required
+✅ **Docker Support** - Containerized execution
+✅ **Type Safety** - Immutable Records for data models
+✅ **Error Handling** - Comprehensive validation and error reporting
+
+## Building & Testing
+
+**Build the project:**
+```bash
+mvn clean package
+```
+
+**Run tests:**
+```bash
+mvn test
+```
+
+**Create executable JAR:**
+```bash
+mvn clean package
+java -jar target/sikyon-data-scripts-modern-2.0.0.jar --script=db-cleaner
+```
+
+## Docker Usage
+
+**Build image:**
+```bash
+docker build -t sikyon-data-scripts:2.0 .
+```
+
+**Run with Docker Compose:**
+```bash
+# Place your .mdb files in ./data/
+mkdir -p data output logs
+
+# Run a script
+docker-compose run --rm sikyon-scripts --script=db-cleaner
+```
+
+## Original Code (Historical Reference)
+
+The `original/` directory contains the **original 2008 code** exactly as it was used to process the data for the published Sikyon Survey monograph. This code has been preserved without modification to ensure reproducibility of the published results.
+
+**📖 See [original/README.md](original/README.md) for details about the historical code.**
+
+The original version is maintained for:
+- **Publication reproducibility** - Ensures published results can be verified
+- **Historical reference** - Documents the original data processing approach
+- **Academic transparency** - Provides complete methodology disclosure
+
+**For current work, use the modern version in the root directory.**
+
+## The Sikyon Survey Project
+
+The Sikyon Survey Project was a multidisciplinary research program to study human presence and activity on the plateau of ancient Sikyon, a city in northeastern Peloponnese between Corinth and Achaia. The project ran between 2004-2009 and was undertaken by the University of Thessaly in collaboration with the University of York (UK), the Institute of Mediterranean Studies at FORTH, and the 37th Ephoreia of Prehistoric and Classical Antiquities.
+
+The primary activity was an urban survey of the ancient city, which quantified and qualified both pottery and architectural observations from the field over 5 seasons. That data was captured in databases and GIS, which aided the archaeologists in making their interpretation of the ancient city and its use.
+
+### Publications
+
+The monograph this code and data helped shape was published in Meletemata in 2018 by the [Greek National Research Foundation](https://history-bookstore.eie.gr/en/section/greek-roman-antiquity/meletemata/).
+
+Further interpretations and discussions:
+- Lolos, Y. 2011 'Land of Sikyon: archaeology and history of a Greek city-state', Hesperia suppl. 39.
+- Lolos, Y., Gourley, B. and Stewart, D. 2008 'The Sikyon Survey Project: a blueprint for urban survey?', Journal of Mediterranean Archaeology **20** (2), 267-96.
+- Charno, M. 2007 'An Interactive Image Using SVG and Ajax in Archaeology', [Internet Archaeology](http://intarch.ac.uk/) **23**. https://doi.org/10.11141/ia.23.5
+
+**Project website:** http://extras.ha.uth.gr/sikyon/en/
+
+## Cross-Platform Compatibility
+
+This codebase is designed to work seamlessly across platforms:
+
+### Windows
+```powershell
+mvn spring-boot:run "-Dspring-boot.run.arguments=--script=db-cleaner"
+```
+
+### macOS/Linux
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments=--script=db-cleaner
+```
+
+All file paths use Java's `Path` API for cross-platform compatibility. Use forward slashes `/` in configuration on all platforms.
+
+## Troubleshooting
+
+**"ClassNotFoundException: net.ucanaccess.jdbc.UcanaccessDriver"**
+- Run `mvn clean install` to download dependencies
+
+**"FileNotFoundException: data/ssp_main.mdb"**
+- Ensure `.mdb` files are in the location specified in `application.yml`
+
+**"SQLException: Database locked"**
+- Close MS Access or other applications using the database files
+
+**Docker "Permission denied" errors (Linux/macOS)**
+```bash
+sudo chown -R $(id -u):$(id -g) data output logs
+```
+
+## Contributing
+
+Contributions should:
+- Maintain backward compatibility with original data processing logic
+- Include unit tests
+- Follow Spring Boot best practices
+- Support cross-platform execution
+
+## License
+
+See [LICENSE](LICENSE) for details.
+
+## Author
+
+**Matthew Charno**
+- Original version: 2008
+- Modernization: 2025
+
+## Acknowledgments
+
+- **Sikyon Survey Project** - University of Thessaly, University of York, Institute of Mediterranean Studies at FORTH
+- **Spring Boot** - https://spring.io/projects/spring-boot
+- **UCanAccess** - https://github.com/ucanaccess/ucanaccess
