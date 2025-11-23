@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: sikyon-data-scripts
+
+# Database Configuration
+database:
+  # MS Access Database Paths
+  access:
+    main: "${DB_ACCESS_MAIN:./data/ssp_main.mdb}"
+    working: "${DB_ACCESS_WORKING:./data/ssp_working.mdb}"
+    reference: "${DB_ACCESS_REF:./data/sik_db-working.mdb}"
+
+  # Oracle Database Configuration
+  oracle:
+    primary:
+      url: "${DB_ORACLE_URL:jdbc:oracle:thin:@localhost:1521:xe}"
+      username: "${DB_ORACLE_USER:}"
+      password: "${DB_ORACLE_PASS:}"
+    backup:
+      url: "${DB_ORACLE_BACKUP_URL:jdbc:oracle:thin:@localhost:1521:xe}"
+      username: "${DB_ORACLE_BACKUP_USER:}"
+      password: "${DB_ORACLE_BACKUP_PASS:}"
+
+# Export Configuration
+export:
+  csv:
+    output-directory: "${EXPORT_CSV_DIR:./output/csv}"
+    delimiter: "|"
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    net.charno.sikyon: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: "${LOG_FILE:./logs/sikyon-data-scripts.log}"

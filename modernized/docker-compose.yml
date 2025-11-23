@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  sikyon-scripts:
+    build: .
+    image: sikyon-data-scripts:2.0
+    container_name: sikyon-data-scripts
+    volumes:
+      # Mount your local database files
+      - ./data:/app/data:ro
+      # Mount output directory
+      - ./output:/app/output
+      # Mount logs directory
+      - ./logs:/app/logs
+    environment:
+      # Database configuration
+      DB_ACCESS_MAIN: /app/data/ssp_main.mdb
+      DB_ACCESS_WORKING: /app/data/ssp_working.mdb
+      DB_ACCESS_REF: /app/data/sik_db-working.mdb
+
+      # Oracle database (optional - configure if needed)
+      # DB_ORACLE_URL: jdbc:oracle:thin:@host:1521:xe
+      # DB_ORACLE_USER: username
+      # DB_ORACLE_PASS: password
+
+      # Export configuration
+      EXPORT_CSV_DIR: /app/output/csv
+
+      # Java options
+      JAVA_OPTS: -Xmx1g
+
+    # Override command to run specific script
+    # Examples:
+    # command: ["--script=db-cleaner"]
+    # command: ["--script=density-builder"]
+    # command: ["--script=pottery-hellenistic"]
