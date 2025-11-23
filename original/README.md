@@ -1,10 +1,22 @@
 # Original Sikyon Data Processing Scripts (2008)
 
-## About This Version
+## ⚠️ Historical Reference Only
 
-This is the **original code** written in 2008 that was used to process the data for the Sikyon Survey monograph. It has been preserved exactly as it was to ensure reproducibility of the published results.
+This directory contains the **original code from 2008** exactly as it was used to process the data for the published Sikyon Survey monograph. This code has been preserved **without any modifications** to ensure complete reproducibility of the published results.
 
-**⚠️ This code is maintained for historical and reproducibility purposes only.** For new work, please use the modernized version in the `../modernized/` directory.
+**This code is maintained exclusively for historical and academic reproducibility purposes.**
+
+### 🚀 For Current Work
+
+**Use the modern version in the root directory:** See [../README.md](../README.md)
+
+The modern version offers:
+- Cross-platform compatibility (Windows, macOS, Linux)
+- Modern Java 17+ with Spring Boot
+- Open-source dependencies (no commercial licenses)
+- Docker support
+- Proper configuration management
+- Professional logging and error handling
 
 ## Original Description
 
@@ -61,10 +73,19 @@ To run the scripts, you can simply run the main method in any of the classes in 
 * `PotteryTableHellenistic`: A script to export the specialist Hellenistic pottery data in the pipe delimited format
 * `PotteryTableRoman`: A script to clean the Roman pottery data
 
+## Why Preserve This Code?
+
+This code is maintained in the repository for:
+
+1. **Publication Reproducibility** - Ensures the published archaeological results can be independently verified by running the exact same code that produced them
+2. **Historical Documentation** - Provides a complete record of the original data processing methodology
+3. **Academic Transparency** - Demonstrates full disclosure of methods used in the published research
+4. **Comparison Reference** - Allows comparison between 2008 and modern development practices
+
 ## Conclusion
 
 This code ain't pretty, but it did its job and is now available for others to investigate and re-process as required. It was also written before I discovered Spring and JPA, so be nice...
 
 ---
 
-**For a modern, maintainable version of this code, see the [../modernized/](../modernized/) directory.**
+**For a modern, maintainable, cross-platform version of this code, see the root directory: [../README.md](../README.md)**

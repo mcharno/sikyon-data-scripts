@@ -1,19 +1,40 @@
-# Compiled class file
-*.class
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
-# Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Logs
+logs/
+*.log
 
-# Intelij Files
-.idea
+# Output
+output/
+*.csv
 
-# Netbeans Leftovers
-lib
+# Data files (should be provided by user)
+data/
+*.mdb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot
+spring-boot-devtools.properties
